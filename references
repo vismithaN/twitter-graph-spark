@@ -2,17 +2,16 @@
   "referenceGuide":"Cite all the reference sources in the required format. Proper citations will help you avoid unnecessary trouble but does not make it acceptable to copy code. Read the course and university policy statements in this regard. When working with others, limit the discussion to block diagrams and arrows. Do not look at another students' code. Read the JSON semantics and make use of JSON validator from the Internet if needed.",
   "websites":[
     {
-      "title":"<title of the page>",
-      "url":"<url>",
-      "code":"<explain in which part of your code did you use the snippet or idea>",
-      "description":"<additional information you may find necessary to provide>"
-    }
-  ],
-  "collaborators":[
+      "title":"RDD Programming Guide",
+      "url":"https://spark.apache.org/docs/latest/rdd-programming-guide.html#transformations",
+      "code":"count(), reduceByKey(), flatMap(), map()",
+      "description":"All the transformation and Actions operation of RDDs"
+    },
     {
-      "andrewId":"<collaborator andrewId>",
-      "collaborationType":"<I helped X, X helped me, or we helped each other>",
-      "description":"<describe the idea discussed or shared>"
+          "title":"How to create an Encoder for Scala collection (to implement custom Aggregator)?",
+          "url":"https://stackoverflow.com/questions/49700168/how-to-create-an-encoder-for-scala-collection-to-implement-custom-aggregator",
+          "code":"implicit val tupleEncoder: sql.Encoder[(Long, Long)] = Encoders.tuple(Encoders.scalaLong, Encoders.scalaLong)",
+          "description":"Implicit encoder"
     }
   ]
 }

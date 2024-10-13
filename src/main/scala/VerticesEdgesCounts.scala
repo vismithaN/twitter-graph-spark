@@ -31,10 +31,19 @@ object VerticesEdgesCounts {
     // TODO: copy your code from the notebook here.
     // TODO: replace with the actual values. You should not hardcode them as the grader tests the
     //  function on a secret dataset.
-    val edges = 0L
-    val vertices = 0L
+    val graphRDD = sc.textFile(inputPath)
+    val edgesRDD = graphRDD.map(line => {
+      val parts = line.split("\t")
+      (parts(0).toLong, parts(1).toLong)
+    }).cache()
 
-    countsToString(vertices, edges)
+    //Vertex
+    val verticesRDD = edgesRDD.flatMap { case (u, v) => Seq(u, v) }.distinct()
+    val numVertices = verticesRDD.count()
+
+    //edges
+    val numEdges = edgesRDD.map(edge => (edge, 1)).reduceByKey((a, b) => a).count()
+    countsToString(numVertices, numEdges)
   }
 
   /**
