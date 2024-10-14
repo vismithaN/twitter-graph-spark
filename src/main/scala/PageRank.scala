@@ -102,7 +102,7 @@ object PageRank {
         .na.fill(0, Seq("contrib"))
 
       // TODO: Handle dangling node contributions
-      val danglingNodes = joined.filter(size($"followees") === 0)
+      val danglingNodes = joined.filter(size($"followees") === 0 || $"followees".isNull)
       val danglingRankSum = if (danglingNodes.count() == 0) {
         0.0 // No dangling nodes, so the sum is 0.0
       } else {
@@ -118,7 +118,7 @@ object PageRank {
       // aggregate contributions
       vars = contribs.groupBy("followee").agg(
           sum("contrib").as("rank"))
-        .withColumn("rank", ($"rank" + lit(danglingContribution)) * lit(0.85) + lit(0.15))
+        .withColumn("rank", ($"rank" + lit(danglingContribution)) * lit(0.85) + lit(0.15/totalUsers))
         .withColumnRenamed("followee", "user")
     }
 
