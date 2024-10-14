@@ -1,5 +1,6 @@
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.Row
 import org.apache.spark.sql.types.{DoubleType, LongType, StructField, StructType}
 
 
@@ -40,6 +41,8 @@ object PageRank {
       iterations: Int,
       spark: SparkSession): Unit = {
     val sc = spark.sparkContext
+    import spark.implicits._
+
 
     // load graph
     val schema = StructType(Array(
@@ -100,7 +103,16 @@ object PageRank {
 
       // TODO: Handle dangling node contributions
       val danglingNodes = joined.filter(size($"followees") === 0)
-      val danglingRankSum = danglingNodes.agg(sum($"rank").as("dangling_rank_sum")).as[Double].firstOption.getOrElse(0.0)
+      val danglingRankSum = if (danglingNodes.count() == 0) {
+        0.0 // No dangling nodes, so the sum is 0.0
+      } else {
+        // Sum the ranks of dangling nodes if they exist
+        danglingNodes
+          .agg(sum($"rank").cast("double").as("dangling_rank_sum"))
+          .select("dangling_rank_sum")
+          .first()
+          .getDouble(0)
+      }
       val danglingContribution = danglingRankSum / totalUsers
 
       // aggregate contributions
