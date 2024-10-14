@@ -90,7 +90,7 @@ object PageRank {
       .withColumn("rank", lit(1.0/totalUsers))
       .select("user", "rank")
 
-    for (i <- 1 to 10) {
+    for (i <- 1 to iterations) {
       val joined = statics.join(vars, "user")
 
       // explode each row in joined df into contribution vectors for each followee
