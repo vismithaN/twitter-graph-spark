@@ -20,20 +20,14 @@ object FollowerDF {
    * @param spark      the spark session.
    */
   def computeFollowerCountDF(inputPath: String, outputPath: String, spark: SparkSession): Unit = {
-    // TODO: Calculate the follower count for each user
-    // TODO: Write the top 100 users to the above outputPath in parquet format
     implicit val tupleEncoder: sql.Encoder[(Long, Long)] = Encoders.tuple(Encoders.scalaLong, Encoders.scalaLong)
     val graphDF = spark.read.textFile(inputPath).map(line => {
       val parts = line.split("\t")
       (parts(0).toLong, parts(1).toLong)
     }).toDF("source", "destination")
-
-    //    val followersDF = graphDF.groupBy("destination").count().alias("num_followers").orderBy("num_followers")
-
-    val top100 = graphDF.groupBy("target_user")
-      .agg(F.count("source_user").alias("num_followers")) // Use agg() and alias the count
+    val top100 = graphDF.groupBy("destination")
+      .agg(F.count("source").alias("num_followers")) // Use agg() and alias the count
       .orderBy(F.desc("num_followers")).limit(100)
-
     top100.write.parquet(outputPath)
   }
     /**
@@ -47,6 +41,5 @@ object FollowerDF {
 
       computeFollowerCountDF(inputGraph, followerDFOutputPath, spark)
     }
-
 
 }
