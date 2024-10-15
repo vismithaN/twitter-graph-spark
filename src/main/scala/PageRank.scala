@@ -52,6 +52,7 @@ object PageRank {
 
     val df = spark.read
       .option("sep", "\t")
+      .option("encoding", "US-ASCII")
       .schema(schema)
       .csv(inputGraphPath)
 
@@ -65,6 +66,7 @@ object PageRank {
 
     val df_topics = spark.read
       .option("sep", "\t")
+      .option("encoding", "US-ASCII")
       .schema(schema2)
       .csv(graphTopicsPath)
 
